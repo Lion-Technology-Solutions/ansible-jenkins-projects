@@ -1,0 +1,56 @@
+
+- name: Install and Configure Jenkins on Ubuntu
+  hosts: localhost  # Target group defined in your inventory
+  become: true            # Run tasks with sudo
+
+  tasks:
+    # 1. Install Java 11 (Jenkins dependency)
+    - name: Install OpenJDK 11
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        state: present
+        update_cache: yes
+
+    # 2. Add Jenkins repository and key
+    - name: Add Jenkins repository key
+      ansible.builtin.apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+
+    - name: Add Jenkins repository
+      ansible.builtin.apt_repository:
+        repo: "deb https://pkg.jenkins.io/debian-stable binary/"
+        state: present
+        filename: jenkins
+
+    # 3. Install Jenkins
+    - name: Install Jenkins
+      ansible.builtin.apt:
+        name: jenkins
+        state: present
+        update_cache: yes
+
+    # 4. Start and enable Jenkins service
+    - name: Ensure Jenkins is running
+      ansible.builtin.service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    # 5. (Optional) Open firewall for Jenkins (default port 8080)
+    - name: Allow Jenkins port in UFW
+      ansible.builtin.ufw:
+        rule: allow
+        port: "8080"
+        proto: tcp
+      when: ansible_os_family == 'Debian'
+
+    # 6. Display initial admin password
+    - name: Get initial admin password
+      ansible.builtin.command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: jenkins_password
+      changed_when: false
+
+    - name: Display initial admin password
+      ansible.builtin.debug:
+        msg: "Jenkins initial admin password: {{ jenkins_password.stdout }}"
