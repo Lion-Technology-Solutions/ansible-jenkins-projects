@@ -1,6 +1,6 @@
  
 - name: Deploy Web Application
-  hosts: test   #   db, mtn, qa  
+  hosts: qa   #   db, mtn, qa  
   become: yes     #   becoming admin and performing admin tasks
   tasks:
     - name: Install Nginx
