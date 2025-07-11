@@ -10,7 +10,7 @@
             steps {
                 ansiblePlaybook(
                     playbook: '01-deploy-app.yaml',
-                    inventory: 'inventory.ini',
+                    inventory:    "${WORKSPACE}/inventory.ini"                        // 'inventory.ini',
                     credentialsId: 'ansible-ssh-key',
                     extras: '--verbose'
                 )
