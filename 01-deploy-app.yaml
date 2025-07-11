@@ -1,0 +1,22 @@
+ 
+- name: Deploy Web Application
+  hosts: test
+  become: yes
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Copy website files
+      copy:
+        src: ./web_files/
+        dest: /var/www/html/
+        mode: '0755'
+
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
