@@ -9,7 +9,7 @@
         stage('Deploy with Ansible') {
             steps {
                 ansiblePlaybook(
-                    playbook: '02-deploy-users.yaml',
+                    playbook: '01-deploy-app.yaml',
                     inventory: 'inventory.ini',
                     credentialsId: 'ansible-ssh-key',
                     extras: '--verbose'
