@@ -1,0 +1,33 @@
+
+- name: "Deploy User 'elvis' with Passwordless SSH"
+  hosts: test_servers  # Target group defined in your inventory
+  become: true         # Run tasks with sudo/root privileges
+
+  vars:
+    username: "elvis"
+    ssh_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"  # Public key path (adjust if needed)
+
+  tasks:
+    # 1. Create the user 'elvis'
+    - name: "Create user {{ username }}"
+      ansible.builtin.user:
+        name: "{{ username }}"
+        shell: /bin/bash
+        state: present
+        create_home: yes
+        home: "/home/{{ username }}"
+
+    # 2. Set up SSH authorized_keys for passwordless login
+    - name: "Add SSH key for {{ username }}"
+      ansible.builtin.authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ ssh_key }}"
+
+    # 3. Allow 'elvis' to use sudo without a password
+    - name: "Grant passwordless sudo to {{ username }}"
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        line: "{{ username }} ALL=(ALL) NOPASSWD:ALL"
+        validate: "visudo -cf %s"  # Ensures syntax is correct
+        state: present
