@@ -1,6 +1,6 @@
 
 - name: "Deploy User 'elvis' with Passwordless SSH"
-  hosts: test_servers  # Target group defined in your inventory
+  hosts: test  # Target group defined in your inventory
   become: true         # Run tasks with sudo/root privileges
 
   vars:
