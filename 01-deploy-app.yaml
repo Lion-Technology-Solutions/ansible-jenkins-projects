@@ -11,7 +11,7 @@
 
     - name: Copy website files
       copy:
-        src: demo.txt
+        src: index.html
         dest: /var/www/html/index.html
         mode: '0755'
 
