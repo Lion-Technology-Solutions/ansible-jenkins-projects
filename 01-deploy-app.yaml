@@ -1,10 +1,10 @@
  
 - name: Deploy Web Application
-  hosts: test
-  become: yes
+  hosts: test   #   db, mtn, qa  
+  become: yes     #   becoming admin and performing admin tasks
   tasks:
     - name: Install Nginx
-      apt:
+      apt:    #  package module      [ sudo apt install ]
         name: nginx
         state: present
       when: ansible_os_family == 'Debian'
@@ -12,7 +12,7 @@
     - name: Copy website files
       copy:
         src: demo.txt
-        dest: /var/www/html/
+        dest: /var/www/html/index.html
         mode: '0755'
 
     - name: Start Nginx
